@@ -7,8 +7,8 @@ import streamlit as st
 
 THEMES = {
     "dark": dict(
-        PRIMARY        = "#4848D1",
-        PRIMARY_HOVER  = "#3E3EC3",
+        PRIMARY        = "#126BCA",
+        PRIMARY_HOVER  = "#126BCA",
         PRIMARY_SOFT   = "rgba(108, 107, 245, 0.16)",
         PRIMARY_SHADOW = "rgba(108, 107, 245, 0.28)",
 
@@ -21,8 +21,8 @@ THEMES = {
         DANGER      = "#F04747",
         DANGER_SOFT = "rgba(240, 71, 71, 0.16)",
 
-        BG          = "#111525",     # background utama, navy sangat gelap
-        SIDEBAR_BG  = "#0E142E",
+        BG          = "#101118",     # background utama, navy sangat gelap
+        SIDEBAR_BG  = "#13141F",
         CARD_BG     = "#131730",     # kartu, sedikit lebih terang dari BG
         CARD_BG_2   = "#171C3A",     # kartu level kedua / hover
         BORDER      = "#232946",
@@ -30,8 +30,8 @@ THEMES = {
         TEXT_MUTED  = "#8B92B0",
     ),
     "light": dict(
-        PRIMARY        = "#3F31D4",
-        PRIMARY_HOVER  = "#3E3EC3",
+        PRIMARY        = "#126BCA",
+        PRIMARY_HOVER  = "#126BCA",
         PRIMARY_SOFT   = "rgba(72, 72, 209, 0.10)",
         PRIMARY_SHADOW = "rgba(72, 72, 209, 0.18)",
 
@@ -44,8 +44,8 @@ THEMES = {
         DANGER      = "#DC2626",
         DANGER_SOFT = "rgba(220, 38, 38, 0.12)",
 
-        BG          = "#E3F2FD",     # background utama, terang
-        SIDEBAR_BG  = "#BBD0E1",
+        BG          = "#f9fafa",     # background utama, terang
+        SIDEBAR_BG  = "#B8D0E4",
         CARD_BG     = "#BBD0E1",     # kartu
         CARD_BG_2   = "#F1F2F9",     # kartu level kedua / hover
         BORDER      = "#E2E4F0",
@@ -94,7 +94,7 @@ def init_theme():
     modul ini sesuai dengan tema yang tersimpan di session_state."""
 
     if "theme" not in st.session_state:
-        st.session_state["theme"] = "dark"
+        st.session_state["theme"] = "light"
 
     _apply_palette(st.session_state["theme"])
 
@@ -113,12 +113,18 @@ def is_dark():
 
 
 def theme_toggle_button(key="theme_toggle"):
-    """Menampilkan tombol untuk mengubah tema light/dark dan
-    langsung memuat ulang halaman saat ditekan."""
+    """Menampilkan toggle switch untuk mengubah tema light/dark."""
 
-    label = "☀️ Light" if is_dark() else "🌙 Dark"
+    dark_aktif = is_dark()
 
-    if st.button(label, key=key, use_container_width=True, help="Ganti tema tampilan"):
+    nilai_baru = st.toggle(
+        "🌙" if dark_aktif else "☀️",
+        value=dark_aktif,
+        key=key,
+        help="Ganti tema tampilan"
+    )
+
+    if nilai_baru != dark_aktif:
         toggle_theme()
         st.rerun()
 
@@ -381,6 +387,16 @@ def load_css():
             border-radius: 999px;
             font-size: 0.78rem;
             font-weight: 700;
+        }}
+
+        /* ---------- Toggle switch tema ---------- */
+        div[data-testid="stToggle"] label div[data-baseweb="checkbox"] div:first-child {{
+            background-color: {PRIMARY if is_dark() else BORDER} !important;
+        }}
+
+        div[data-testid="stToggle"] p {{
+            color: {TEXT} !important;
+            font-size: 0.85rem !important;
         }}
 
         </style>
